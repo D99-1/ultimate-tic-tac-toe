@@ -3,15 +3,49 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPlayer = 'X'; 
     let activeBoard = null;
 
+    const checkWin = (board) => {
+        const cells = board.querySelectorAll('.cell-content');
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]              
+        ];
+
+        for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                return cells[a].textContent; 
+            }
+        }
+
+        return null;
+    };
+
     const handleCellClick = (event) => {
         const cell = event.target.closest('.cell');
         const cellContent = cell.querySelector('.cell-content');
-        const smallBoardIndex = Number(cell.parentElement.dataset.board);
+        const smallBoard = cell.parentElement;
+        const smallBoardIndex = Number(smallBoard.dataset.board);
 
         if (!cellContent.textContent.trim() && (activeBoard === null || activeBoard === smallBoardIndex)) {
             cellContent.textContent = currentPlayer;
+            const winner = checkWin(smallBoard);
+
+            if (winner) {
+                smallBoard.classList.add('won');
+                smallBoard.dataset.winner = winner;
+            }
+
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             activeBoard = Number(cell.dataset.cell);
+
+            document.querySelectorAll('.small-board').forEach(board => {
+                board.classList.remove('active');
+            });
+
+            if (activeBoard !== null && !smallBoard.classList.contains('won')) {
+                mainBoard.children[activeBoard].classList.add('active');
+            }
         }
     };
 

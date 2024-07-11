@@ -47,3 +47,13 @@ body {
     align-items: center;
     font-size: 2em;
 }
+
+.small-board.active {
+    border: 3px solid #FF6347;
+    background-color: #FFE4E1;
+}
+
+.small-board.won {
+    border: 3px solid #32CD32;
+    background-color: #90EE90;
+}
