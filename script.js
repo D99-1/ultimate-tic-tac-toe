@@ -3,22 +3,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPlayer = 'X'; 
     let activeBoard = null;
 
-    const checkWin = (board) => {
-        const cells = board.querySelectorAll('.cell-content');
-        const winPatterns = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], 
-            [0, 3, 6], [1, 4, 7], [2, 5, 8],
-            [0, 4, 8], [2, 4, 6]              
-        ];
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+        [0, 4, 8], [2, 4, 6]              
+    ];
 
+    const checkWin = (cells) => {
         for (const pattern of winPatterns) {
             const [a, b, c] = pattern;
             if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
                 return cells[a].textContent; 
             }
         }
-
         return null;
+    };
+
+    const checkMainBoardWin = () => {
+        const mainBoardWinners = Array.from(mainBoard.children).map(board => board.dataset.winner || '');
+        const winner = checkWin(mainBoardWinners.map(winner => ({ textContent: winner })));
+        if (winner) {
+            alert(`${winner} wins the game!`);
+        }
     };
 
     const handleCellClick = (event) => {
@@ -27,13 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const smallBoard = cell.parentElement;
         const smallBoardIndex = Number(smallBoard.dataset.board);
 
-        if (!cellContent.textContent.trim() && (activeBoard === null || activeBoard === smallBoardIndex)) {
+        if (!cellContent.textContent.trim() && (activeBoard === null || activeBoard === smallBoardIndex || mainBoard.children[activeBoard].classList.contains('won'))) {
             cellContent.textContent = currentPlayer;
-            const winner = checkWin(smallBoard);
+            const winner = checkWin(smallBoard.querySelectorAll('.cell-content'));
 
             if (winner) {
                 smallBoard.classList.add('won');
                 smallBoard.dataset.winner = winner;
+                smallBoard.classList.add(winner === 'X' ? 'x' : 'o');
+
+                const winnerMark = document.createElement('div');
+                winnerMark.classList.add('winner-mark');
+                winnerMark.textContent = winner;
+                smallBoard.appendChild(winnerMark);
+
+                checkMainBoardWin();
             }
 
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
@@ -43,8 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 board.classList.remove('active');
             });
 
-            if (activeBoard !== null && !smallBoard.classList.contains('won')) {
+            if (mainBoard.children[activeBoard] && !mainBoard.children[activeBoard].classList.contains('won')) {
                 mainBoard.children[activeBoard].classList.add('active');
+            } else {
+                activeBoard = null; 
+                document.querySelectorAll('.small-board').forEach(board => {
+                    if (!board.classList.contains('won')) {
+                        board.classList.add('active');
+                    }
+                });
             }
         }
     };
