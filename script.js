@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainBoard = document.getElementById('main-board');
+    const activePlayerElement = document.getElementById('active-player');
     let currentPlayer = 'X'; 
     let activeBoard = null;
 
@@ -8,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
         [0, 3, 6], [1, 4, 7], [2, 5, 8], 
         [0, 4, 8], [2, 4, 6]              
     ];
+
+    const updateActivePlayerIndicator = () => {
+        activePlayerElement.textContent = `Current Player: ${currentPlayer}`;
+    };
 
     const checkWin = (cells) => {
         for (const pattern of winPatterns) {
@@ -51,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            updateActivePlayerIndicator();
             activeBoard = Number(cell.dataset.cell);
 
             document.querySelectorAll('.small-board').forEach(board => {
@@ -86,4 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
             smallBoard.appendChild(cell);
         }
     }
+
+    updateActivePlayerIndicator();
 });

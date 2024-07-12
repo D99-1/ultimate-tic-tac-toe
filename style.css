@@ -1,10 +1,18 @@
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 110vh;
     background-color: #f5f5f5;
     margin: 0;
+    overflow: scroll;
+}
+
+#active-player {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .board {
@@ -71,6 +79,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 5em;
+    font-size: 10em; /* Make the X or O large enough to cover the whole board */
     color: rgba(50, 205, 50, 0.5); 
+    font-weight: bold; /* Ensure the X or O is bold */
+    text-align: center; /* Center the X or O */
+    font-family: 'Impact', sans-serif; /* Change the font to Impact */
 }
